@@ -8,6 +8,7 @@ import os
 import requests
 import zipfile
 import io
+import shutil
 
 LATEST_RELEASE_URL = "https://api.github.com/repos/Grosey/Stansted-Flight-Simulator/releases/latest"
 def check_for_updates(current_version):
@@ -17,19 +18,39 @@ def check_for_updates(current_version):
     
     if latest_version > current_version:
         print("New version available:", latest_version)
-        download_url = latest_release["assets"][0]["browser_download_url"]
+        
+        download_url = latest_release["zipball_url"]
         download_and_replace(download_url)
     else:
         print("No updates available")
+
+
 
 def download_and_replace(url):
     response = requests.get(url)
     with zipfile.ZipFile(io.BytesIO(response.content)) as zfile:
         zfile.extractall("update_folder")
 
-    # Code to replace the current files with the updated files
-    # ...
-    print("Update downloaded and extracted to 'update_folder'")
+    # Replace the current files with the updated files
+    for root, dirs, files in os.walk("update_folder"):
+        for file in files:
+            updated_file_path = os.path.join(root, file)
+            current_file_path = os.path.abspath(updated_file_path.replace("update_folder", ".").lstrip(os.path.sep))
+            
+            # Check if the current file path exists, then remove it
+            if os.path.exists(current_file_path):
+                os.remove(current_file_path)
+            
+            # Create directories if they don't exist
+            os.makedirs(os.path.dirname(current_file_path), exist_ok=True)
+            
+            # Move the updated file to the current file path
+            shutil.move(updated_file_path, current_file_path)
+    
+    # Remove the update_folder after updating
+    shutil.rmtree("update_folder")
+
+    print("Update completed")
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -177,7 +198,7 @@ class LogBook:
         self.save_logs()
 
 if __name__ == "__main__":
-    CURRENT_VERSION = "v1.0.1"
+    CURRENT_VERSION = "v1.0.2"
     check_for_updates(CURRENT_VERSION)
     
     root = tk.Tk()
