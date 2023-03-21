@@ -210,9 +210,10 @@ class LogBook:
         self.logs.pop(selected_index[0])
         self.update_listbox()
         self.save_logs()
-
+# test
+        
 if __name__ == "__main__":
-    CURRENT_VERSION = "v1.0.5"
+    CURRENT_VERSION = "v1.0.6"
     check_for_updates(CURRENT_VERSION)
     
     root = tk.Tk()
