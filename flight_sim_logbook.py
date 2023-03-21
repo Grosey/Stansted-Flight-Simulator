@@ -212,7 +212,7 @@ class LogBook:
         self.save_logs()
 
 if __name__ == "__main__":
-    CURRENT_VERSION = "v1.0.2"
+    CURRENT_VERSION = "v1.0.3"
     check_for_updates(CURRENT_VERSION)
     
     root = tk.Tk()
