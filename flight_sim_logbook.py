@@ -9,6 +9,7 @@ import requests
 import zipfile
 import io
 import shutil
+import sys
 
 LATEST_RELEASE_URL = "https://api.github.com/repos/Grosey/Stansted-Flight-Simulator/releases/latest"
 def check_for_updates(current_version):
@@ -31,11 +32,15 @@ def download_and_replace(url):
     with zipfile.ZipFile(io.BytesIO(response.content)) as zfile:
         zfile.extractall("update_folder")
 
+    # Get the current directory and its parent directory
+    current_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
+    parent_directory = os.path.dirname(current_directory)
+
     # Replace the current files with the updated files
     for root, dirs, files in os.walk("update_folder"):
         for file in files:
             updated_file_path = os.path.join(root, file)
-            current_file_path = os.path.abspath(updated_file_path.replace("update_folder", ".").lstrip(os.path.sep))
+            current_file_path = os.path.abspath(updated_file_path.replace("update_folder", current_directory).lstrip(os.path.sep))
             
             # Check if the current file path exists, then remove it
             if os.path.exists(current_file_path):
@@ -49,6 +54,15 @@ def download_and_replace(url):
     
     # Remove the update_folder after updating
     shutil.rmtree("update_folder")
+
+    # Get the latest version number from the GitHub API
+    response = requests.get(LATEST_RELEASE_URL)
+    latest_release = response.json()
+    latest_version = latest_release["tag_name"]
+
+    # Rename the current folder to the latest version
+    new_directory = os.path.join(parent_directory, f"Stansted-Flight-Simulator-{latest_version}")
+    os.rename(current_directory, new_directory)
 
     print("Update completed")
 
