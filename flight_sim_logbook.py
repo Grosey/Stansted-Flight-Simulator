@@ -19,9 +19,6 @@ def check_for_updates(current_version):
     
     if latest_version > current_version:
         print("New version available:", latest_version)
-        
-        download_url = latest_release["zipball_url"]
-        download_and_replace(download_url)
     else:
         print("No updates available")
 
@@ -210,10 +207,9 @@ class LogBook:
         self.logs.pop(selected_index[0])
         self.update_listbox()
         self.save_logs()
-# test
         
 if __name__ == "__main__":
-    CURRENT_VERSION = "v1.0.6"
+    CURRENT_VERSION = "v1.0.7"
     check_for_updates(CURRENT_VERSION)
     
     root = tk.Tk()
