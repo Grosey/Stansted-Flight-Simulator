@@ -4,6 +4,32 @@ import pickle
 from datetime import datetime, timedelta
 import firebase_admin
 from firebase_admin import credentials, initialize_app, db
+import os
+import requests
+import zipfile
+import io
+
+LATEST_RELEASE_URL = "https://api.github.com/repos/Grosey/Stansted-Flight-Simulator/releases/latest"
+def check_for_updates(current_version):
+    response = requests.get(LATEST_RELEASE_URL)
+    latest_release = response.json()
+    latest_version = latest_release["tag_name"]
+    
+    if latest_version > current_version:
+        print("New version available:", latest_version)
+        download_url = latest_release["assets"][0]["browser_download_url"]
+        download_and_replace(download_url)
+    else:
+        print("No updates available")
+
+def download_and_replace(url):
+    response = requests.get(url)
+    with zipfile.ZipFile(io.BytesIO(response.content)) as zfile:
+        zfile.extractall("update_folder")
+
+    # Code to replace the current files with the updated files
+    # ...
+    print("Update downloaded and extracted to 'update_folder'")
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -151,6 +177,9 @@ class LogBook:
         self.save_logs()
 
 if __name__ == "__main__":
+    CURRENT_VERSION = "v1.0.0"
+    check_for_updates(CURRENT_VERSION)
+    
     root = tk.Tk()
     LogBook(root)
     root.mainloop()
