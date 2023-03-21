@@ -81,7 +81,7 @@ class LogBook:
         self.logs_ref = db.reference('logs')
         
         self.master = master
-        self.master.title("Stansted Flight Simulator Log Book")
+        self.master.title("Stansted Flight Simulator Log Book - Version " + CURRENT_VERSION)
         self.master.iconbitmap('thumbnail_cf23fcb6.ico')
         self.logs = []
         self.load_logs()
@@ -177,7 +177,7 @@ class LogBook:
         self.save_logs()
 
 if __name__ == "__main__":
-    CURRENT_VERSION = "v1.0.0"
+    CURRENT_VERSION = "v1.0.1"
     check_for_updates(CURRENT_VERSION)
     
     root = tk.Tk()
