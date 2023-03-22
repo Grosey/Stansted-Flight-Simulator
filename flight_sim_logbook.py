@@ -10,6 +10,8 @@ import zipfile
 import io
 import shutil
 import sys
+from tkinter import messagebox
+
 
 LATEST_RELEASE_URL = "https://api.github.com/repos/Grosey/Stansted-Flight-Simulator/releases/latest"
 def check_for_updates(current_version):
@@ -18,7 +20,14 @@ def check_for_updates(current_version):
     latest_version = latest_release["tag_name"]
     
     if latest_version > current_version:
-        print("New version available:", latest_version)
+        root = tk.Tk()
+        root.withdraw()  # Hide the main window
+        messagebox.showerror(
+            "Update Required",
+            f"A new version is available: {latest_version}. Please update to the latest version before using the application."
+        )
+        root.destroy()
+        sys.exit(0)
     else:
         print("No updates available")
 
@@ -166,10 +175,6 @@ class LogBook:
             log_text = f"Date: {formatted_date} | Captain: {log['captain']} | Journey: {log['journey_from']} to {log['journey_to']} | Depart: {log['depart']} | Arrival: {log['arrival']} | Total Time: {log['total_time']} | Remarks: {log['remarks']}"
             self.log_listbox.insert(tk.END, log_text)
 
-
-
-
-
     def add_log(self):
         add_log_dialog = AddLogDialog(self.master)
         self.master.wait_window(add_log_dialog)
@@ -180,23 +185,6 @@ class LogBook:
             self.logs.append(log_data)
             self.update_listbox()
             self.save_logs()
-
-    def edit_log(self):
-        selected_index = self.log_listbox.curselection()
-        if not selected_index:
-            messagebox.showwarning("Warning", "Please select a log to edit.")
-            return
-
-        old_log = self.logs[selected_index[0]]
-        for key, value in old_log.items():
-            new_value = tk.simpledialog.askstring("Edit Log", f"Edit {key}:", initialvalue=value)
-            if new_value:
-                old_log[key] = new_value
-            else:
-                return
-
-        self.update_listbox()
-        self.save_logs()
 
     def delete_log(self):
         selected_index = self.log_listbox.curselection()
@@ -209,7 +197,7 @@ class LogBook:
         self.save_logs()
         
 if __name__ == "__main__":
-    CURRENT_VERSION = "v1.0.8"
+    CURRENT_VERSION = "v1.0.1"
     check_for_updates(CURRENT_VERSION)
     
     root = tk.Tk()
