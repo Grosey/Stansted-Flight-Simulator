@@ -131,7 +131,8 @@ def create_certificate(name, font_path="arial.ttf", template_path="certificate b
     pictures_folder = os.path.expanduser("~/Pictures")
 
     # Save the certificate with the name in the Pictures folder
-    certificate_path = os.path.join(pictures_folder, f"certificate_{name}.png")
+    name_with_underscores = name.replace(" ", "_")
+    certificate_path = os.path.join(pictures_folder, f"certificate_{name_with_underscores}.png")
     certificate.save(certificate_path)
 
     # Open the image using the default image viewer, which usually provides a print option
@@ -352,7 +353,7 @@ class LogBook:
         self.save_logs()
         
 if __name__ == "__main__":
-    CURRENT_VERSION = "v1.1.0"
+    CURRENT_VERSION = "v1.1.1"
     check_for_updates(CURRENT_VERSION)
     
     root = tk.Tk()
