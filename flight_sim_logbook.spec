@@ -6,8 +6,12 @@ a = Analysis(
     ['flight_sim_logbook.pyw'],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=[
+        ('stansted-flight-simulator-log-firebase-adminsdk-jxh61-4fb61497f6.json', '.'),
+        ('certificate blank.jpg', '.'),
+        ('arial.ttf', '.')
+    ],
+    hiddenimports=['babel.numbers'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -33,7 +37,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # Set to False for no console window
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
